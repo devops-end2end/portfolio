@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import Hero, { RolePersona } from '@/components/Hero';
 import CareerTimeline from '@/components/CareerTimeline';
 import SkillMatrix from '@/components/SkillMatrix';
@@ -49,9 +50,9 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <div>Next.js Static Export (SSG) • Deployed via GitHub Actions</div>
           <div className="flex gap-4">
-            <a href="/topology" className="hover:text-zinc-300 transition-colors">
+            <Link href="/topology" className="hover:text-zinc-300 transition-colors">
               System Topology View →
-            </a>
+            </Link>
           </div>
         </div>
       </footer>
