@@ -139,4 +139,35 @@ export default function CaseStudies({ caseStudies = defaultCaseStudies }: CaseSt
           {selectedStudy && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-2
+                <DialogTitle className="text-2xl font-bold text-slate-100">{selectedStudy.title}</DialogTitle>
+                <DialogDescription className="text-slate-400 mt-2">
+                  {selectedStudy.problem}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="mt-6 space-y-6">
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-2">Metrics & Outcomes</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedStudy.metrics.map((metric, idx) => (
+                      <Badge key={idx} variant="secondary" className="bg-slate-800 text-cyan-400 border-slate-700">
+                        {metric}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-2">Proposed Solution</h4>
+                  <p className="text-slate-300 text-sm leading-relaxed">{selectedStudy.solution}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-2">Architecture Diagram</h4>
+                  <MermaidDiagram chart={selectedStudy.architecture} id={selectedStudy.id} />
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}

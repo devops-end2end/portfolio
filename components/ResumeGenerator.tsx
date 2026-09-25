@@ -25,23 +25,44 @@ const ResumePDF = ({ role }: { role: string }) => (
   </Document>
 )
 
-export function ResumeGenerator({ currentRole }: { currentRole: string }) {
-  const [open, setOpen] = React.useState(false)
+export default function ResumeGenerator({
+  isOpen,
+  onClose,
+  defaultPersona,
+  currentRole
+}: {
+  isOpen?: boolean
+  onClose?: () => void
+  defaultPersona?: string
+  currentRole?: string
+}) {
+  const [internalOpen, setInternalOpen] = React.useState(false)
   const [isGenerating, setIsGenerating] = React.useState(false)
 
+  const open = isOpen !== undefined ? isOpen : internalOpen
+  const setOpen = (val: boolean) => {
+    if (onClose && !val) {
+      onClose()
+    } else {
+      setInternalOpen(val)
+    }
+  }
+
   React.useEffect(() => {
-    const handler = () => setOpen(true)
+    const handler = () => setInternalOpen(true)
     window.addEventListener('open-resume-modal', handler)
     return () => window.removeEventListener('open-resume-modal', handler)
   }, [])
 
+  const activeRole = currentRole || defaultPersona || "master"
+
   const handleDownload = async () => {
     setIsGenerating(true)
-    const blob = await pdf(<ResumePDF role={currentRole} />).toBlob()
+    const blob = await pdf(<ResumePDF role={activeRole} />).toBlob()
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `Resume_${currentRole}.pdf`
+    link.download = `Resume_${activeRole}.pdf`
     link.click()
     URL.revokeObjectURL(url)
     setIsGenerating(false)
@@ -54,7 +75,7 @@ export function ResumeGenerator({ currentRole }: { currentRole: string }) {
         <DialogHeader>
           <DialogTitle>Download Tailored Resume</DialogTitle>
           <DialogDescription>
-            Generate a PDF resume customized for the {currentRole} persona.
+            Generate a PDF resume customized for the {activeRole} persona.
           </DialogDescription>
         </DialogHeader>
         <div className="flex justify-end gap-2 mt-4">

@@ -3,7 +3,7 @@ import * as React from "react"
 import { Command } from "cmdk"
 import { useRouter } from "next/navigation"
 
-export function CommandPalette() {
+export default function CommandPalette() {
   const [open, setOpen] = React.useState(false)
   const router = useRouter()
 
