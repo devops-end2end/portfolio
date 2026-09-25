@@ -42,8 +42,8 @@ GitHub Actions workflow for building and deploying the static export to GitHub P
 ### Data Layer
 Static content extracted from the provided master record.
 
-#### [NEW] data/career.ts
-TypeScript module containing the parsed and structured data from `career.master.record.txt`. This will export typed objects for Experience (Roles, Companies, Tenures, Accomplishments), Skills (Grouped by domain), and flagship Case Studies.
+#### [NEW] data/career.yml
+YAML data file containing structured content extracted from `career.master.record.txt`. This exports structured data for Experience (Roles, Companies, Tenures, Accomplishments), Skills (Grouped by domain), and flagship Case Studies.
 
 ### UI Components & Shadcn Integrations
 Reusable presentation components.
