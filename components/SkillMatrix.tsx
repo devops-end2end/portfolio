@@ -8,70 +8,50 @@ interface SkillCategory {
   skills: { name: string; level?: 'Expert' | 'Advanced' | 'Proficient' }[];
 }
 
-const skillCategories: SkillCategory[] = [
-  {
+interface SkillMatrixProps {
+  skills: {
+    cloud_k8s: string[];
+    gitops_cicd: string[];
+    data_ml_search: string[];
+    devsecops_observability: string[];
+    hardware_networking: string[];
+  };
+}
+
+const categoryMap: Record<string, { title: string; description: string }> = {
+  cloud_k8s: {
     title: 'Cloud & K8s Platforms',
     description: 'Multi-cloud architectures, bare-metal clusters, and container orchestration.',
-    skills: [
-      { name: 'Kubernetes (K8s)', level: 'Expert' },
-      { name: 'Amazon Web Services (AWS)', level: 'Expert' },
-      { name: 'Bare-Metal Infrastructure', level: 'Expert' },
-      { name: 'Linux Kernel & Systemd', level: 'Expert' },
-      { name: 'Helm & Kustomize', level: 'Advanced' },
-      { name: 'Google Cloud Platform (GCP)', level: 'Proficient' },
-    ],
   },
-  {
+  gitops_cicd: {
     title: 'GitOps & CI/CD Pipelines',
     description: 'Declarative infrastructure-as-code and automated canary delivery workflows.',
-    skills: [
-      { name: 'ArgoCD & Rollouts', level: 'Expert' },
-      { name: 'Terraform & OpenTofu', level: 'Expert' },
-      { name: 'GitHub Actions / GitLab CI', level: 'Expert' },
-      { name: 'Docker / BuildKit', level: 'Expert' },
-      { name: 'Ansible', level: 'Advanced' },
-      { name: 'Crossplane', level: 'Proficient' },
-    ],
   },
-  {
+  data_ml_search: {
     title: 'Data, MLOps & Vector Search',
     description: 'High-throughput real-time distributed data pipelines and AI retrieval engines.',
-    skills: [
-      { name: 'Qdrant / Milvus (Vector DBs)', level: 'Expert' },
-      { name: 'Apache Kafka', level: 'Advanced' },
-      { name: 'Ceph Object/Block Storage', level: 'Advanced' },
-      { name: 'PostgreSQL & ClickHouse', level: 'Advanced' },
-      { name: 'Redis / Dragonfly', level: 'Expert' },
-      { name: 'Ollama & Model Serving', level: 'Advanced' },
-    ],
   },
-  {
+  devsecops_observability: {
     title: 'DevSecOps, Identity & Observability',
     description: 'Zero-trust networks, telemetric telemetry tracing, and secrets management.',
-    skills: [
-      { name: 'Prometheus & Grafana', level: 'Expert' },
-      { name: 'HashiCorp Vault', level: 'Advanced' },
-      { name: 'OpenTelemetry (OTel)', level: 'Advanced' },
-      { name: 'Datadog & ELK Stack', level: 'Expert' },
-      { name: 'Cilium & eBPF', level: 'Advanced' },
-      { name: 'Trivy & Falco Security', level: 'Advanced' },
-    ],
   },
-  {
+  hardware_networking: {
     title: 'Hardware & Networking',
     description: 'Datacenter hardware engineering, low-latency switching, and edge networks.',
-    skills: [
-      { name: 'BGP / OSPF / EVPN', level: 'Advanced' },
-      { name: 'DNS & Cloudflare Enterprise', level: 'Expert' },
-      { name: 'Dell PowerEdge & Supermicro', level: 'Expert' },
-      { name: 'Enterprise SAN / NVMe-oF', level: 'Advanced' },
-      { name: 'IPMI / Redfish Automation', level: 'Advanced' },
-      { name: 'WireGuard & Mesh VPNs', level: 'Expert' },
-    ],
   },
-];
+};
 
-export default function SkillMatrix() {
+export default function SkillMatrix({ skills }: SkillMatrixProps) {
+  // Convert the YAML object structure into the array structure the UI expects
+  const skillCategories: SkillCategory[] = Object.entries(skills).map(([key, skillList]) => {
+    const meta = categoryMap[key] || { title: key, description: '' };
+    return {
+      title: meta.title,
+      description: meta.description,
+      skills: skillList.map(s => ({ name: s })),
+    };
+  });
+
   return (
     <section id="skills" className="py-16 border-b border-zinc-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,9 +78,6 @@ export default function SkillMatrix() {
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-zinc-900 border border-zinc-800 text-zinc-200"
                     >
                       <span>{skill.name}</span>
-                      {skill.level === 'Expert' && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" title="Expert" />
-                      )}
                     </span>
                   ))}
                 </div>

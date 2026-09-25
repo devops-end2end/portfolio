@@ -5,71 +5,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export interface CareerRole {
   company: string;
-  role: string;
-  duration: string;
+  roles: string[];
+  tenure: string;
   location?: string;
-  tags?: ('manager' | 'architect')[];
+  tags?: string[];
   summary?: string;
   achievements: string[];
   technologies?: string[];
 }
 
 interface CareerTimelineProps {
-  careerData?: CareerRole[];
+  careerData: CareerRole[];
   activePersona?: 'manager' | 'architect' | 'master';
 }
 
-const defaultCareerData: CareerRole[] = [
-  {
-    company: 'adMarketplace',
-    role: 'Senior Director / Principal Infrastructure Architect',
-    duration: '2021 — Present',
-    location: 'New York, NY',
-    tags: ['manager', 'architect'],
-    summary:
-      'Led platform engineering and cloud infrastructure operations delivering multi-billion auction requests per day.',
-    achievements: [
-      'Architected and implemented multi-region bare-metal Kubernetes and AWS hybrid infrastructure powering low-latency search bidding pipelines.',
-      'Directed engineering teams across Platform, SRE, and DevSecOps domains, improving DORA deployment frequency by 400%.',
-      'Engineered Ceph distributed storage cluster and self-hosted vector database infrastructure for sub-10ms semantic retrieval.',
-      'Reduced enterprise infrastructure expenditure by over $1.2M annually through automated FinOps controls and workload bin-packing.',
-    ],
-    technologies: ['Kubernetes', 'AWS', 'Ceph', 'ArgoCD', 'Terraform', 'Prometheus', 'Kafka', 'Golang'],
-  },
-  {
-    company: 'Vanguard',
-    role: 'Lead Cloud Infrastructure Architect',
-    duration: '2018 — 2021',
-    location: 'Malvern, PA',
-    tags: ['architect', 'manager'],
-    summary:
-      'Spearheaded enterprise cloud transformation initiatives across multi-account AWS landing zones for financial systems.',
-    achievements: [
-      'Designed zero-trust network topology and infrastructure-as-code foundations across 200+ AWS organizational accounts.',
-      'Established enterprise GitOps standards with ArgoCD and automated canary analysis using Prometheus metrics.',
-      'Mentored and upskilled 35+ engineers on cloud-native software architecture, containerization, and immutable deployments.',
-    ],
-    technologies: ['AWS', 'EKS', 'ArgoCD', 'Terraform', 'Datadog', 'Python', 'Vault'],
-  },
-  {
-    company: 'Canon USA',
-    role: 'Senior Systems & Network Infrastructure Engineer',
-    duration: '2014 — 2018',
-    location: 'Melville, NY',
-    tags: ['architect'],
-    summary:
-      'Engineered mission-critical enterprise virtualization, core BGP/OSPF networking, and business continuity systems.',
-    achievements: [
-      'Maintained 99.999% uptime for core enterprise datacenter operations, SAN fabric, and multi-site replication.',
-      'Automated provisioning workflows for Linux and Windows virtualization clusters using Ansible and Bash.',
-      'Designed and executed disaster recovery runbooks with sub-15 minute RTO/RPO failovers.',
-    ],
-    technologies: ['Linux', 'VMware', 'Cisco BGP/OSPF', 'SAN/NAS', 'Ansible', 'Bash'],
-  },
-];
-
 export default function CareerTimeline({
-  careerData = defaultCareerData,
+  careerData,
   activePersona = 'master',
 }: CareerTimelineProps) {
   const [selectedTag, setSelectedTag] = useState<'all' | 'manager' | 'architect'>('all');
@@ -84,7 +35,8 @@ export default function CareerTimeline({
 
   const filteredJobs = careerData.filter((job) => {
     if (effectiveFilter === 'all') return true;
-    return job.tags ? job.tags.includes(effectiveFilter) : true;
+    // Check if any of the job tags match the filter
+    return job.tags ? job.tags.some(tag => tag.toLowerCase().includes(effectiveFilter)) : true;
   });
 
   const toggleExpand = (index: number) => {
@@ -158,11 +110,11 @@ export default function CareerTimeline({
                 <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-5 md:p-6 transition-colors hover:border-zinc-700">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
-                      <h3 className="text-xl font-bold text-white">{job.role}</h3>
+                      <h3 className="text-xl font-bold text-white">{job.roles.join(' / ')}</h3>
                       <div className="text-blue-400 font-medium text-sm mt-0.5">{job.company}</div>
                     </div>
                     <div className="text-xs font-mono text-zinc-400 sm:text-right">
-                      <div>{job.duration}</div>
+                      <div>{job.tenure}</div>
                       {job.location && <div className="text-zinc-500">{job.location}</div>}
                     </div>
                   </div>
@@ -178,7 +130,7 @@ export default function CareerTimeline({
                         <span
                           key={tag}
                           className={`text-xs px-2 py-0.5 rounded font-mono uppercase ${
-                            tag === 'manager'
+                            tag.toLowerCase().includes('leadership') || tag.toLowerCase().includes('manager')
                               ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                               : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                           }`}
