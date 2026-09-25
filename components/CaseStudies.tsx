@@ -54,4 +54,89 @@ function MermaidDiagram({ chart, id }: { chart: string; id: string }) {
       theme: 'dark',
       securityLevel: 'loose',
       themeVariables: {
-        fontFamily:
+        fontFamily: 'inherit',
+        primaryColor: '#3b82f6',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#60a5fa',
+        lineColor: '#94a3b8',
+        secondaryColor: '#1e293b',
+        tertiaryColor: '#0f172a'
+      }
+    });
+
+    let isMounted = true;
+    const renderId = `mermaid-${id}-${Math.random().toString(36).substring(2, 9)}`;
+
+    mermaid.render(renderId, chart)
+      .then((result) => {
+        if (isMounted) {
+          setSvgContent(result.svg);
+        }
+      })
+      .catch((err) => {
+        console.error("Mermaid render error:", err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [chart, id]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full flex justify-center items-center overflow-x-auto p-4 bg-slate-950/60 rounded-lg border border-slate-800"
+      dangerouslySetInnerHTML={{ __html: svgContent }}
+    />
+  );
+}
+
+interface CaseStudiesProps {
+  caseStudies?: CaseStudy[];
+}
+
+export default function CaseStudies({ caseStudies = defaultCaseStudies }: CaseStudiesProps) {
+  const [selectedStudy, setSelectedStudy] = React.useState<CaseStudy | null>(null);
+
+  return (
+    <section className="py-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold tracking-tight text-slate-100">Architecture Case Studies</h2>
+        <p className="text-slate-400 mt-2">
+          Deep-dive technical architectural transformations, trade-offs, and measurable engineering outcomes.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {caseStudies.map((study) => (
+          <Card
+            key={study.id}
+            className="cursor-pointer border-slate-800 bg-slate-900/50 hover:bg-slate-900/80 transition-all hover:border-slate-700 flex flex-col justify-between"
+            onClick={() => setSelectedStudy(study)}
+          >
+            <CardHeader>
+              <CardTitle className="text-lg text-slate-100">{study.title}</CardTitle>
+              <CardDescription className="text-slate-400 line-clamp-2 mt-1">
+                {study.problem}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {study.metrics.map((metric, idx) => (
+                  <Badge key={idx} variant="secondary" className="bg-slate-800 text-cyan-400 border-slate-700">
+                    {metric}
+                  </Badge>
+                ))}
+              </div>
+              <p className="text-sm text-slate-300 line-clamp-3">{study.solution}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={!!selectedStudy} onOpenChange={(open) => !open && setSelectedStudy(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-800 text-slate-100">
+          {selectedStudy && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2
