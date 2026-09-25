@@ -1,0 +1,19 @@
+import { getCareerData } from '@/lib/data';                                                                                                                                                                        
+                                                                                                                                                                                                                   
+const SkillMatrix = () => {                                                                                                                                                                                        
+  const careerData = getCareerData();                                                                                                                                                                              
+                                                                                                                                                                                                                   
+  return (                                                                                                                                                                                                         
+    <div className="skill-matrix-container">                                                                                                                                                                       
+      <h2>Cloud & K8s Platforms</h2>                                                                                                                                                                               
+      <ul>                                                                                                                                                                                                         
+        {careerData.cloudPlatforms.map((skill, index) => (                                                                                                                                                         
+          <li key={index}>{skill}</li>                                                                                                                                                                             
+        ))}                                                                                                                                                                                                        
+      </ul>                                                                                                                                                                                                        
+      {/* Repeat the above for other skill categories */}                                                                                                                                                          
+    </div>                                                                                                                                                                                                         
+  );                                                                                                                                                                                                               
+};                                                                                                                                                                                                                 
+                                                                                                                                                                                                                   
+export default SkillMatrix;
